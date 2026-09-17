@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetCare Pro - Sistema de Gestión Vet & Clínica</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-hover: #0f766e;
+            --primary-light: #ccfbf1;
+            --secondary: #6366f1;
+            --secondary-hover: #4f46e5;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styling */
+        aside {
+            width: 280px;
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .brand {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            padding: 12px 12px 6px 12px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #f1f5f9;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), #0f766e);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+        }
+
+        .nav-item .hu-badge {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        /* Main Content Layout */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .page-header-info h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f1f5f9;
+            padding: 6px 12px;
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 28px 32px;
+            overflow-y: auto;
+        }
+
+        /* Module Views */
+        .module-view {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .module-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Components & Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input, select, textarea {
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background-color: #fafafa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8fafc;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f1f5f9/50;
+        }
+
+        /* Notification Toast */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #0f172a;
+            color: white;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-teal { background: #ccfbf1; color: #0f766e; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-amber { background: #fef3c7; color: #92400e; }
+
+        /* Report Stat Boxes */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="brand">
+            <div class="brand-icon"><i data-lucide="paw-print"></i></div>
+            <div>
+                <div class="brand-title">VetCare Pro</div>
+                <div class="brand-subtitle">Gestión Clínica Veterinaria</div>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-section-title">Registro & Citas</div>
+            <a class="nav-item active" onclick="switchTab('hu01')">
+                <i data-lucide="user-plus"></i>
+                <span>Propietarios</span>
+                <span class="hu-badge">HU-01</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu02')">
+                <i data-lucide="dog"></i>
+                <span>Mascotas</span>
+                <span class="hu-badge">HU-02</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu03')">
+                <i data-lucide="calendar-plus"></i>
+                <span>Agendar Cita</span>
+                <span class="hu-badge">HU-03</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu04')">
+                <i data-lucide="calendar"></i>
+                <span>Consultar Citas</span>
+                <span class="hu-badge">HU-04</span>
+            </a>
+
+            <div class="nav-section-title">Atención Médica</div>
+            <a class="nav-item" onclick="switchTab('hu05')">
+                <i data-lucide="file-text"></i>
+                <span>Registrar Atención</span>
+                <span class="hu-badge">HU-05</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu06')">
+                <i data-lucide="clipboard-list"></i>
+                <span>Historial Clínico</span>
+                <span class="hu-badge">HU-06</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu07')">
+                <i data-lucide="pill"></i>
+                <span>Registrar Tratamiento</span>
+                <span class="hu-badge">HU-07</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu08')">
+                <i data-lucide="stethoscope"></i>
+                <span>Consultar Tratamientos</span>
+                <span class="hu-badge">HU-08</span>
+            </a>
+            <a class="nav-item" onclick="switchTab('hu09')">
+                <i data-lucide="activity"></i>
+                <span>Control Médico</span>
+                <span class="hu-badge">HU-09</span>
+            </a>
+
+            <div class="nav-section-title">Administración</div>
+            <a class="nav-item" onclick="switchTab('hu10')">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Reporte Consultas</span>
+                <span class="hu-badge">HU-10</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN APP CONTENT -->
+    <main>
+        <header>
+            <div class="page-header-info">
+                <h1 id="page-title"><i data-lucide="user-plus"></i> HU-01: Registrar Propietario</h1>
+                <p id="page-desc">Registrar datos de nuevos clientes/propietarios en la clínica.</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">V</div>
+                <div>
+                    <div class="user-name">Dr. Sistema Vet</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <!-- HU-01: REGISTRAR PROPIETARIO -->
+            <div id="hu01" class="module-view active">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="user-plus"></i> Formulario de Registro de Propietario</div>
+                    <form id="form-propietario" onsubmit="registrarPropietario(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="prop-nombre">Nombre Completo *</label>
+                                <input type="text" id="prop-nombre" required placeholder="Ej: Juan Pérez">
+                            </div>
+                            <div class="form-group">
+                                <label for="prop-telefono">Teléfono de Contacto *</label>
+                                <input type="tel" id="prop-telefono" required placeholder="Ej: 78945612">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="prop-direccion">Dirección Domiciliaria *</label>
+                                <input type="text" id="prop-direccion" required placeholder="Ej: Av. Principal #123, Zona Central">
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Guardar Propietario</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i data-lucide="users"></i> Propietarios Registrados</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-propietarios">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HU-02: REGISTRAR MASCOTA -->
+            <div id="hu02" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="dog"></i> Formulario de Registro de Mascota</div>
+                    <form id="form-mascota" onsubmit="registrarMascota(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="masc-propietario">Propietario Asociado *</label>
+                                <select id="masc-propietario" required>
+                                    <option value="">-- Seleccionar Propietario --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="masc-nombre">Nombre de la Mascota *</label>
+                                <input type="text" id="masc-nombre" required placeholder="Ej: Firulais">
+                            </div>
+                            <div class="form-group">
+                                <label for="masc-especie">Especie *</label>
+                                <select id="masc-especie" required>
+                                    <option value="Perro">Perro</option>
+                                    <option value="Gato">Gato</option>
+                                    <option value="Ave">Ave</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="masc-raza">Raza *</label>
+                                <input type="text" id="masc-raza" required placeholder="Ej: Golden Retriever">
+                            </div>
+                            <div class="form-group">
+                                <label for="masc-edad">Edad (Años/Meses) *</label>
+                                <input type="text" id="masc-edad" required placeholder="Ej: 2 años">
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Registrar Mascota</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i data-lucide="list"></i> Mascotas Registradas</div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Mascota</th>
+                                    <th>Especie</th>
+                                    <th>Raza</th>
+                                    <th>Edad</th>
+                                    <th>Propietario</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-mascotas">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HU-03: REGISTRAR CITA -->
+            <div id="hu03" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="calendar-plus"></i> Agendar Nueva Cita</div>
+                    <form id="form-cita" onsubmit="registrarCita(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cita-mascota">Seleccionar Mascota *</label>
+                                <select id="cita-mascota" required>
+                                    <option value="">-- Seleccionar Mascota --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cita-fecha">Fecha de la Cita *</label>
+                                <input type="date" id="cita-fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cita-hora">Hora Disponible *</label>
+                                <input type="time" id="cita-hora" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="cita-motivo">Motivo de Consulta *</label>
+                                <input type="text" id="cita-motivo" required placeholder="Ej: Control de rutina / Vacunación">
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="check-circle"></i> Agendar Cita</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- HU-04: CONSULTAR CITAS -->
+            <div id="hu04" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="filter"></i> Consultar Citas Programadas</div>
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="filtro-fecha-cita">Filtrar por Fecha</label>
+                            <input type="date" id="filtro-fecha-cita" onchange="filtrarCitas()">
+                        </div>
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button class="btn btn-secondary" onclick="limpiarFiltroCitas()"><i data-lucide="rotate-ccw"></i> Mostrar Todas</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Mascota</th>
+                                    <th>Propietario</th>
+                                    <th>Motivo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-citas">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HU-05: REGISTRAR ATENCIÓN -->
+            <div id="hu05" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="file-text"></i> Registrar Atención en Historial Clínico</div>
+                    <form id="form-atencion" onsubmit="registrarAtencion(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="atenc-mascota">Mascota Atendida *</label>
+                                <select id="atenc-mascota" required>
+                                    <option value="">-- Seleccionar Mascota --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="atenc-fecha">Fecha de Atención *</label>
+                                <input type="date" id="atenc-fecha" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="atenc-motivo">Motivo de Consulta *</label>
+                                <input type="text" id="atenc-motivo" required placeholder="Ej: Inapetencia y decaimiento">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="atenc-diagnostico">Diagnóstico *</label>
+                                <textarea id="atenc-diagnostico" rows="2" required placeholder="Ej: Gastroenteritis leve"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="atenc-observaciones">Observaciones / Indicaciones *</label>
+                                <textarea id="atenc-observaciones" rows="2" required placeholder="Ej: Dieta blanda por 3 días"></textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="file-check"></i> Guardar en Historial</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- HU-06: CONSULTAR HISTORIAL -->
+            <div id="hu06" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="search"></i> Buscar Historial Clínico del Paciente</div>
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="hist-mascota-select">Seleccione Paciente *</label>
+                            <select id="hist-mascota-select" onchange="cargarHistorialMascota()">
+                                <option value="">-- Seleccionar Mascota --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="contenedor-historial">
+                        <p style="color: var(--text-muted); text-align: center; padding: 20px;">Seleccione una mascota para consultar su expediente clínico.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HU-07: REGISTRAR TRATAMIENTO -->
+            <div id="hu07" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="pill"></i> Registrar Tratamiento y Medicamentos</div>
+                    <form id="form-tratamiento" onsubmit="registrarTratamiento(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="trat-mascota">Seleccionar Mascota *</label>
+                                <select id="trat-mascota" required>
+                                    <option value="">-- Seleccionar Mascota --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="trat-nombre">Tratamiento / Medicamento *</label>
+                                <input type="text" id="trat-nombre" required placeholder="Ej: Amoxicilina 250mg">
+                            </div>
+                            <div class="form-group">
+                                <label for="trat-dosis">Dosis *</label>
+                                <input type="text" id="trat-dosis" required placeholder="Ej: 1 tableta">
+                            </div>
+                            <div class="form-group">
+                                <label for="trat-frecuencia">Frecuencia *</label>
+                                <input type="text" id="trat-frecuencia" required placeholder="Ej: Cada 12 horas">
+                            </div>
+                            <div class="form-group">
+                                <label for="trat-duracion">Duración *</label>
+                                <input type="text" id="trat-duracion" required placeholder="Ej: 7 días">
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Asignar Tratamiento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- HU-08: CONSULTAR TRATAMIENTOS -->
+            <div id="hu08" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="stethoscope"></i> Consultar Tratamientos Asignados</div>
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="cons-trat-mascota">Seleccionar Paciente *</label>
+                            <select id="cons-trat-mascota" onchange="cargarTratamientosMascota()">
+                                <option value="">-- Seleccionar Mascota --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tratamiento / Medicamento</th>
+                                    <th>Dosis</th>
+                                    <th>Frecuencia</th>
+                                    <th>Duración</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-tratamientos">
+                                <tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Seleccione una mascota para ver tratamientos.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HU-09: CONTROL MÉDICO -->
+            <div id="hu09" class="module-view">
+                <div class="card">
+                    <div class="card-title"><i data-lucide="activity"></i> Registrar Control Médico & Peso</div>
+                    <form id="form-control" onsubmit="registrarControl(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="ctrl-mascota">Seleccionar Mascota *</label>
+                                <select id="ctrl-mascota" required>
+                                    <option value="">-- Seleccionar Mascota --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ctrl-fecha">Fecha del Control *</label>
+                                <input type="date" id="ctrl-fecha" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ctrl-peso">Peso Registrado (Kg) *</label>
+                                <input type="number" step="0.1" id="ctrl-peso" required placeholder="Ej: 12.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="ctrl-estado">Estado de Salud *</label>
+                                <select id="ctrl-estado" required>
+                                    <option value="Excelente">Excelente</option>
+                                    <option value="Bueno">Bueno</option>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Delicado">Delicado</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="ctrl-observaciones">Observaciones Adicionales</label>
+                                <input type="text" id="ctrl-observaciones" placeholder="Ej: Mascota activa, apetito normal">
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; text-align:right;">
+                            <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Guardar Control</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- HU-10: REPORTE CONSULTAS -->
+            <div id="hu10" class="module-view">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i data-lucide="file-text"></i></div>
+                        <div>
+                            <div class="stat-val" id="stat-total-consultas">0</div>
+                            <div class="stat-lbl">Total Consultas Filtradas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i data-lucide="bar-chart-3"></i> Reporte de Consultas Realizadas</div>
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="rep-fecha-inicio">Fecha Inicio</label>
+                            <input type="date" id="rep-fecha-inicio">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-fecha-fin">Fecha Fin</label>
+                            <input type="date" id="rep-fecha-fin">
+                        </div>
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button class="btn btn-primary" onclick="generarReporte()"><i data-lucide="filter"></i> Generar Reporte</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha Atención</th>
+                                    <th>Mascota</th>
+                                    <th>Propietario</th>
+                                    <th>Motivo Consulta</th>
+                                    <th>Diagnóstico</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-reporte">
+                                <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Seleccione un rango de fechas para generar reporte.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script>
+        // DATA STORES
+        let propietarios = [
+            { id: 1, nombre: 'Carlos Mendoza', telefono: '71234567', direccion: 'Av. Las Palmas #45' },
+            { id: 2, nombre: 'Ana María Gutiérrez', telefono: '78901234', direccion: 'Calle Murillo #890' }
+        ];
+
+        let mascotas = [
+            { id: 1, propietarioId: 1, nombre: 'Max', especie: 'Perro', raza: 'German Shepherd', edad: '3 años' },
+            { id: 2, propietarioId: 2, nombre: 'Luna', especie: 'Gato', raza: 'Siames', edad: '1.5 años' }
+        ];
+
+        let citas = [
+            { id: 1, mascotaId: 1, fecha: '2026-09-10', hora: '10:00', motivo: 'Chequeo General' },
+            { id: 2, mascotaId: 2, fecha: '2026-09-12', hora: '15:30', motivo: 'Vacuna Anual' }
+        ];
+
+        let historiales = [
+            { id: 1, mascotaId: 1, fecha: '2026-09-01', motivo: 'Tos leve', diagnostico: 'Resfrío canino', observaciones: 'Se recetó jarabe por 5 días' }
+        ];
+
+        let tratamientos = [
+            { id: 1, mascotaId: 1, nombre: 'Jarabe Antitusivo', dosis: '5ml', frecuencia: 'Cada 8 hrs', duracion: '5 días' }
+        ];
+
+        let controles = [];
+
+        // INIT & LUCIDE ICONS
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            actualizarSelects();
+            renderPropietarios();
+            renderMascotas();
+            renderCitas();
+            
+            // Set current date on date inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelectorAll('input[type="date"]').forEach(inp => inp.value = today);
+        });
+
+        // TOAST NOTIFICATIONS
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => {
+                toast.remove();
+            }, 3500);
+        }
+
+        // TAB NAVIGATION
+        const titles = {
+            'hu01': { title: '<i data-lucide="user-plus"></i> HU-01: Registrar Propietario', desc: 'Registrar datos de nuevos clientes/propietarios.' },
+            'hu02': { title: '<i data-lucide="dog"></i> HU-02: Registrar Mascota', desc: 'Registrar datos de la mascota y vincular con su dueño.' },
+            'hu03': { title: '<i data-lucide="calendar-plus"></i> HU-03: Registrar Cita Veterinario', desc: 'Agendar cita médica para atención.' },
+            'hu04': { title: '<i data-lucide="calendar"></i> HU-04: Consultar Citas', desc: 'Visualizar cronograma de citas de atención.' },
+            'hu05': { title: '<i data-lucide="file-text"></i> HU-05: Registrar Atención', desc: 'Añadir nueva consulta médica al historial.' },
+            'hu06': { title: '<i data-lucide="clipboard-list"></i> HU-06: Consultar Historial', desc: 'Revisar expediente clínico completo del paciente.' },
+            'hu07': { title: '<i data-lucide="pill"></i> HU-07: Registrar Tratamiento', desc: 'Asignar recetas y tratamientos a la mascota.' },
+            'hu08': { title: '<i data-lucide="stethoscope"></i> HU-08: Consultar Tratamientos', desc: 'Ver indicaciones médicas asignadas.' },
+            'hu09': { title: '<i data-lucide="activity"></i> HU-09: Control Médico', desc: 'Registrar seguimiento de peso y estado físico.' },
+            'hu10': { title: '<i data-lucide="bar-chart-3"></i> HU-10: Reportes', desc: 'Generar reportes consolidados por período.' }
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.module-view').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            
+            // Mark active menu
+            const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes(tabId));
+            if(activeNav) activeNav.classList.add('active');
+
+            // Update Header
+            document.getElementById('page-title').innerHTML = titles[tabId].title;
+            document.getElementById('page-desc').innerText = titles[tabId].desc;
+            lucide.createIcons();
+        }
+
+        // SELECT POPULATION
+        function actualizarSelects() {
+            // Propietarios
+            const selectProp = document.getElementById('masc-propietario');
+            selectProp.innerHTML = '<option value="">-- Seleccionar Propietario --</option>';
+            propietarios.forEach(p => {
+                selectProp.innerHTML += `<option value="${p.id}">${p.nombre} (${p.telefono})</option>`;
+            });
+
+            // Mascotas
+            const selectsMasc = ['cita-mascota', 'atenc-mascota', 'hist-mascota-select', 'trat-mascota', 'cons-trat-mascota', 'ctrl-mascota'];
+            selectsMasc.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const currentVal = el.value;
+                el.innerHTML = '<option value="">-- Seleccionar Mascota --</option>';
+                mascotas.forEach(m => {
+                    const prop = propietarios.find(p => p.id == m.propietarioId);
+                    const propName = prop ? prop.nombre : 'Sin Propietario';
+                    el.innerHTML += `<option value="${m.id}">${m.nombre} - ${m.especie} (${propName})</option>`;
+                });
+                el.value = currentVal;
+            });
+        }
+
+        // HU-01 HANDLERS
+        function registrarPropietario(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('prop-nombre').value.trim();
+            const telefono = document.getElementById('prop-telefono').value.trim();
+            const direccion = document.getElementById('prop-direccion').value.trim();
+
+            if (!nombre || !telefono || !direccion) {
+                showToast('Por favor completa todos los campos obligatorios', 'error');
+                return;
+            }
+
+            const nuevo = { id: propietarios.length + 1, nombre, telefono, direccion };
+            propietarios.push(nuevo);
+            renderPropietarios();
+            actualizarSelects();
+            document.getElementById('form-propietario').reset();
+            showToast('Propietario registrado exitosamente');
+        }
+
+        function renderPropietarios() {
+            const tbody = document.getElementById('tabla-propietarios');
+            tbody.innerHTML = '';
+            propietarios.forEach(p => {
+                tbody.innerHTML += `<tr>
+                    <td>#${p.id}</td>
+                    <td><strong>${p.nombre}</strong></td>
+                    <td>${p.telefono}</td>
+                    <td>${p.direccion}</td>
+                </tr>`;
+            });
+        }
+
+        // HU-02 HANDLERS
+        function registrarMascota(e) {
+            e.preventDefault();
+            const propietarioId = document.getElementById('masc-propietario').value;
+            const nombre = document.getElementById('masc-nombre').value.trim();
+            const especie = document.getElementById('masc-especie').value;
+            const raza = document.getElementById('masc-raza').value.trim();
+            const edad = document.getElementById('masc-edad').value.trim();
+
+            if (!propietarioId || !nombre || !raza || !edad) {
+                showToast('Completa todos los datos requeridos', 'error');
+                return;
+            }
+
+            const nueva = { id: mascotas.length + 1, propietarioId: parseInt(propietarioId), nombre, especie, raza, edad };
+            mascotas.push(nueva);
+            renderMascotas();
+            actualizarSelects();
+            document.getElementById('form-mascota').reset();
+            showToast('Mascota registrada y asociada con éxito');
+        }
+
+        function renderMascotas() {
+            const tbody = document.getElementById('tabla-mascotas');
+            tbody.innerHTML = '';
+            mascotas.forEach(m => {
+                const prop = propietarios.find(p => p.id == m.propietarioId);
+                tbody.innerHTML += `<tr>
+                    <td>#${m.id}</td>
+                    <td><strong>${m.nombre}</strong></td>
+                    <td><span class="badge badge-teal">${m.especie}</span></td>
+                    <td>${m.raza}</td>
+                    <td>${m.edad}</td>
+                    <td>${prop ? prop.nombre : 'N/A'}</td>
+                </tr>`;
+            });
+        }
+
+        // HU-03 & HU-04 HANDLERS
+        function registrarCita(e) {
+            e.preventDefault();
+            const mascotaId = document.getElementById('cita-mascota').value;
+            const fecha = document.getElementById('cita-fecha').value;
+            const hora = document.getElementById('cita-hora').value;
+            const motivo = document.getElementById('cita-motivo').value.trim();
+
+            // Validar disponibilidad
+            const existe = citas.some(c => c.fecha === fecha && c.hora === hora);
+            if (existe) {
+                showToast('Ya existe una cita agendada en la misma fecha y hora', 'error');
+                return;
+            }
+
+            citas.push({ id: citas.length + 1, mascotaId: parseInt(mascotaId), fecha, hora, motivo });
+            renderCitas();
+            document.getElementById('form-cita').reset();
+            showToast('Cita agendada correctamente');
+            switchTab('hu04');
+        }
+
+        function renderCitas(citasAFiltrar = null) {
+            const list = citasAFiltrar || citas;
+            const tbody = document.getElementById('tabla-citas');
+            tbody.innerHTML = '';
+
+            if(list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No hay citas programadas para mostrar.</td></tr>`;
+                return;
+            }
+
+            list.forEach(c => {
+                const masc = mascotas.find(m => m.id == c.mascotaId);
+                const prop = masc ? propietarios.find(p => p.id == masc.propietarioId) : null;
+                tbody.innerHTML += `<tr>
+                    <td><strong>${c.fecha}</strong></td>
+                    <td><span class="badge badge-blue">${c.hora}</span></td>
+                    <td>${masc ? masc.nombre : 'N/A'}</td>
+                    <td>${prop ? prop.nombre : 'N/A'}</td>
+                    <td>${c.motivo}</td>
+                </tr>`;
+            });
+        }
+
+        function filtrarCitas() {
+            const fecha = document.getElementById('filtro-fecha-cita').value;
+            if(!fecha) return renderCitas();
+            const filtradas = citas.filter(c => c.fecha === fecha);
+            renderCitas(filtradas);
+        }
+
+        function limpiarFiltroCitas() {
+            document.getElementById('filtro-fecha-cita').value = '';
+            renderCitas();
+        }
+
+        // HU-05 & HU-06 HANDLERS
+        function registrarAtencion(e) {
+            e.preventDefault();
+            const mascotaId = document.getElementById('atenc-mascota').value;
+            const fecha = document.getElementById('atenc-fecha').value;
+            const motivo = document.getElementById('atenc-motivo').value.trim();
+            const diagnostico = document.getElementById('atenc-diagnostico').value.trim();
+            const observaciones = document.getElementById('atenc-observaciones').value.trim();
+
+            historiales.push({
+                id: historiales.length + 1,
+                mascotaId: parseInt(mascotaId),
+                fecha, motivo, diagnostico, observaciones
+            });
+
+            document.getElementById('form-atencion').reset();
+            showToast('Atención registrada en el historial clínico');
+            switchTab('hu06');
+            document.getElementById('hist-mascota-select').value = mascotaId;
+            cargarHistorialMascota();
+        }
+
+        function cargarHistorialMascota() {
+            const mascotaId = document.getElementById('hist-mascota-select').value;
+            const container = document.getElementById('contenedor-historial');
+
+            if (!mascotaId) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 20px;">Seleccione una mascota para consultar su expediente clínico.</p>`;
+                return;
+            }
+
+            const items = historiales.filter(h => h.mascotaId == mascotaId).sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+
+            if (items.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:30px; color: var(--text-muted);"><i data-lucide="info" style="margin-bottom:8px;"></i><br>La mascota no cuenta con registros previos en su historial clínico.</div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            let html = '<div style="display:flex; flex-direction:column; gap:16px;">';
+            items.forEach(item => {
+                html += `
+                <div style="border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 16px; border-radius: var(--radius-md); background: #fafafa;">
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px;">
+                        <span style="font-weight:bold; color: var(--primary);"><i data-lucide="calendar" style="width:14px; height:14px; display:inline;"></i> ${item.fecha}</span>
+                        <span class="badge badge-teal">Atención Registrada</span>
+                    </div>
+                    <p style="font-size:14px; margin-bottom:6px;"><strong>Motivo:</strong> ${item.motivo}</p>
+                    <p style="font-size:14px; margin-bottom:6px;"><strong>Diagnóstico:</strong> ${item.diagnostico}</p>
+                    <p style="font-size:13px; color: var(--text-muted);"><strong>Observaciones:</strong> ${item.observaciones}</p>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // HU-07 & HU-08 HANDLERS
+        function registrarTratamiento(e) {
+            e.preventDefault();
+            const mascotaId = document.getElementById('trat-mascota').value;
+            const nombre = document.getElementById('trat-nombre').value.trim();
+            const dosis = document.getElementById('trat-dosis').value.trim();
+            const frecuencia = document.getElementById('trat-frecuencia').value.trim();
+            const duracion = document.getElementById('trat-duracion').value.trim();
+
+            tratamientos.push({
+                id: tratamientos.length + 1,
+                mascotaId: parseInt(mascotaId),
+                nombre, dosis, frecuencia, duracion
+            });
+
+            document.getElementById('form-tratamiento').reset();
+            showToast('Tratamiento asignado correctamente');
+            switchTab('hu08');
+            document.getElementById('cons-trat-mascota').value = mascotaId;
+            cargarTratamientosMascota();
+        }
+
+        function cargarTratamientosMascota() {
+            const mascotaId = document.getElementById('cons-trat-mascota').value;
+            const tbody = document.getElementById('tabla-tratamientos');
+
+            if (!mascotaId) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Seleccione una mascota para ver tratamientos.</td></tr>`;
+                return;
+            }
+
+            const items = tratamientos.filter(t => t.mascotaId == mascotaId);
+
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No existen tratamientos asignados para esta mascota.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            items.forEach(t => {
+                tbody.innerHTML += `<tr>
+                    <td><strong>${t.nombre}</strong></td>
+                    <td>${t.dosis}</td>
+                    <td><span class="badge badge-blue">${t.frecuencia}</span></td>
+                    <td>${t.duracion}</td>
+                </tr>`;
+            });
+        }
+
+        // HU-09 HANDLER
+        function registrarControl(e) {
+            e.preventDefault();
+            const mascotaId = document.getElementById('ctrl-mascota').value;
+            const fecha = document.getElementById('ctrl-fecha').value;
+            const peso = document.getElementById('ctrl-peso').value;
+            const estado = document.getElementById('ctrl-estado').value;
+            const observaciones = document.getElementById('ctrl-observaciones').value.trim();
+
+            controles.push({
+                id: controles.length + 1,
+                mascotaId: parseInt(mascotaId),
+                fecha, peso, estado, observaciones
+            });
+
+            document.getElementById('form-control').reset();
+            showToast('Control médico registrado exitosamente');
+        }
+
+        // HU-10 HANDLER
+        function generarReporte() {
+            const inicio = document.getElementById('rep-fecha-inicio').value;
+            const fin = document.getElementById('rep-fecha-fin').value;
+            const tbody = document.getElementById('tabla-reporte');
+
+            let filtrados = historiales;
+            if (inicio && fin) {
+                filtrados = historiales.filter(h => h.fecha >= inicio && h.fecha <= fin);
+            }
+
+            document.getElementById('stat-total-consultas').innerText = filtrados.length;
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">No se encontraron consultas registradas en el período seleccionado.</td></tr>`;
+                showToast('No existen consultas para las fechas seleccionadas', 'error');
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtrados.forEach(h => {
+                const masc = mascotas.find(m => m.id == h.mascotaId);
+                const prop = masc ? propietarios.find(p => p.id == masc.propietarioId) : null;
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${h.fecha}</strong></td>
+                    <td>${masc ? masc.nombre : 'N/A'}</td>
+                    <td>${prop ? prop.nombre : 'N/A'}</td>
+                    <td>${h.motivo}</td>
+                    <td>${h.diagnostico}</td>
+                </tr>`;
+            });
+
+            showToast('Reporte generado correctamente');
+        }
+    </script>
+</body>
+</html>
