@@ -1,0 +1,52 @@
+    <form onsubmit="editP(event)">
+        <div class="grid">
+
+            ${select(
+                'Propietario *',
+                'epid',
+                optP()
+            )}
+
+            ${field(
+                'Nombre *',
+                'epnom'
+            )}
+
+            ${field(
+                'Teléfono *',
+                'eptel'
+            )}
+
+            ${field(
+                'Dirección *',
+                'epdir'
+            )}
+
+        </div>
+
+        <div class="actions">
+            <button class="btn primary">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+<script>
+
+    function editP(e) {
+    e.preventDefault();
+
+    let x = p(document.getElementById('epid').value);
+
+    if (!x) {
+        return toast('Seleccione un propietario', true);
+    }
+
+    x.nombre = pval('epnom');
+    x.telefono = pval('eptel');
+    x.direccion = pval('epdir');
+
+    refresh();
+
+    toast('Propietario actualizado');
+}
+</script>

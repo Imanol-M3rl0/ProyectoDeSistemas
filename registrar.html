@@ -1,0 +1,56 @@
+
+    <form onsubmit="addP(event)">
+        <div class="grid">
+
+            ${field(
+                'Nombre completo *',
+                'pnom'
+            )}
+
+            ${field(
+                'Teléfono *',
+                'ptel'
+            )}
+
+            ${field(
+                'Dirección *',
+                'pdir'
+            )}
+
+        </div>
+
+        <div class="actions">
+            <button class="btn primary">
+                ${icon('save')}
+                Guardar propietario
+            </button>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="card-title">
+            ${icon('users')}
+            Propietarios registrados
+        </div>
+
+        <div class="table" id="p-table"></div>
+    </div>
+<script>
+    function addP(e) {
+    e.preventDefault();
+
+    propietarios.push({
+        id: Date.now(),
+        nombre: pval('pnom'),
+        telefono: pval('ptel'),
+        direccion: pval('pdir')
+    });
+
+    e.target.reset();
+
+    refresh();
+
+    toast('Propietario registrado correctamente');
+}
+</script>
+
